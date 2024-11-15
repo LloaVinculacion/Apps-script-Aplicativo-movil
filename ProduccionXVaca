@@ -1,0 +1,51 @@
+var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+
+// Obtener la hoja de cálculo
+function getSheet() {
+  return SpreadsheetApp.openById(SheetId).getSheetByName("Produccion");
+}
+
+// Función doGet para obtener datos
+function doGet(e) {
+  // Obtener la hoja
+  var sheet = getSheet();
+  var select = e.parameter;
+  
+  // Leer el contenido de la celda A1
+  var valorVol = sheet.getRange(2, 6, sheet.getLastRow()-1, 1).getValues();
+  var valorID = sheet.getRange(2, 5, sheet.getLastRow()-1, 1).getValues();
+  var suma = 0;
+  
+  
+  if(select.opc=="todo"){
+    for(i=0;i<valorVol.length;i++){
+    suma = suma + Number(valorVol[i]);
+    }
+  }else{
+    for(i=0;i<valorID.length;i++){
+      if (valorID[i]==select.opc){
+        suma = suma + Number(valorVol[i]);
+      }
+    }
+  }
+  // Devolver el valor como respuesta en formato JSON
+  return ContentService.createTextOutput(JSON.stringify( suma.toFixed(2) )) //
+                       .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Función doPost para insertar datos
+function doPost(e) {
+  // Obtener los datos del cuerpo de la solicitud
+  var parametros = JSON.parse(e.postData.contents);
+  var nuevoDato = parametros.dato;
+  
+  // Obtener la hoja
+  var sheet = getSheet();
+  
+  // Insertar el nuevo dato en la celda A1
+  sheet.getRange("D1").setValue(nuevoDato);
+  
+  // Confirmar que los datos fueron guardados
+  return ContentService.createTextOutput(JSON.stringify({ resultado: "Dato guardado correctamente" }))
+                       .setMimeType(ContentService.MimeType.JSON);
+}
