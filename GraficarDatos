@@ -1,0 +1,367 @@
+var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+var SheetId2 = "1UE2z8k5yuMYnDEKHtkNM2nj_BRpH-xs4v1nzjX0Dom0";
+
+
+function doGet(e) {
+  return graficarDatos(e);
+}
+
+function doPost(e) {
+  return graficarDatos(e);
+}
+
+function graficarDatos(e) {
+  
+  filtrarDatos(e);
+
+  // Obtener los parámetros de la solicitud HTTP
+  var parametros = e.parameter; 
+  var vaca = parametros.vaca; 
+  var opci = parametros.opc;
+
+  // Obtener una referencia a la hoja para el grafico
+  var sheetName = "Filtro"; // Nombre de la hoja donde deseas pegar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheetGraficar = spreadsheet.getSheetByName(sheetName);
+
+// Obtener una referencia a la hoja para el grafico
+  var sheetName = "Graficar"; // Nombre de la hoja donde deseas pegar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheetGrafico = spreadsheet.getSheetByName(sheetName);
+  
+
+  // Crear la hoja si no existe
+  if (sheetGraficar === null) {
+    sheetGraficar = spreadsheet.insertSheet(sheetName);
+  }
+
+  //Rango datos
+  var lastFila = sheetGraficar.getLastRow();
+  var lastColumna = sheetGraficar.getLastColumn();
+  var rangeDatos = sheetGraficar.getRange(1,1,lastFila,lastColumna);
+  var rangeDatosA = sheetGraficar.getRange(1,1,lastFila,1);
+  var rangeDatosB = sheetGraficar.getRange(1,2,lastFila,1);
+  var rangeDatosC = sheetGraficar.getRange(1,3,lastFila,1);
+  var rangeDatosD = sheetGraficar.getRange(1,4,lastFila,1);
+  var vectRange=[rangeDatos,rangeDatosA,rangeDatosB,rangeDatosC,rangeDatosD];
+  //console.log(vectRange[0].getValues());
+
+  for (i=0;i<4;i++){
+    if (sheetGraficar.getCharts()[i] == null){
+      // Crea el gráfico
+      
+        if(i==0){
+          var grafico0 = sheetGraficar.newChart()
+          .setChartType(Charts.ChartType.AREA)
+          .addRange(rangeDatos)
+          //.addRange(vectRange[2])
+          //.addRange(vectRange[3])
+          //.addRange(vectRange[4])
+          .setPosition(7, 4, 0, 0) // Posiciona el gráfico en la hoja
+          .setOption('vAxis', {gridlines: { count: 20 } })
+          .setOption('title', 'Litros por dia de la vaca '+vaca) // Título del gráfico
+          .setOption('isStacked', false)
+          .setOption('hAxis.title', 'Fechas') // Etiqueta del eje X
+          .setOption('vAxis.title', 'Litros de leche') // Etiqueta del eje Y
+          .setOption('useRowAsHeaders', true)
+          .setOption("width",1000)
+          .setOption("height",800)
+          .build();
+          if(opci=="dia"){
+            grafico0 = sheetGraficar.getCharts()[i];
+            grafico0= grafico0.modify()
+            .setChartType(Charts.ChartType.COLUMN)
+            .build();
+          }
+          // Añade el gráfico a la hoja
+          sheetGraficar.insertChart(grafico0);
+        }else{
+          var colores;
+          if(i==1){
+            colores='#0000FF';
+          }else if(i==2){
+            colores='#FF0000';
+          }else if(i==3){
+            colores='#FFA500';
+          }
+          var grafico = sheetGraficar.newChart()
+          .setChartType(Charts.ChartType.AREA)
+          .addRange(vectRange[1])
+          .addRange(vectRange[i+1])
+          .setPosition(7, 4, 0, 0) // Posiciona el gráfico en la hoja
+          .setOption('vAxis', {gridlines: { count: 20 } })
+          .setOption('title', 'Litros por dia de la vaca '+vaca) // Título del gráfico
+          .setOption('isStacked', false)
+          .setOption('hAxis.title', 'Fechas') // Etiqueta del eje X
+          .setOption('vAxis.title', 'Litros de leche') // Etiqueta del eje Y
+          .setOption("width",1000)
+          .setOption("height",800)
+          .setOption('series', {
+            0: { color: colores }, // Color para la primera serie
+            })
+          .build();
+          if(opci=="dia"){
+            grafico = sheetGraficar.getCharts()[i];
+            grafico= grafico.modify()
+            .setChartType(Charts.ChartType.COLUMN)
+            .build();
+          }
+          // Añade el gráfico a la hoja
+          sheetGraficar.insertChart(grafico);
+        }
+      
+      
+    }else{
+      
+        if(i==0){
+          var chart0 = sheetGraficar.getCharts()[i];
+          chart0 = chart0.modify()
+          .setChartType(Charts.ChartType.AREA)
+          .clearRanges()
+          .addRange(rangeDatos)
+          //.addRange(vectRange[2])
+          //.addRange(vectRange[3])
+          //.addRange(vectRange[4])
+          .setPosition(7, 4, 0, 0) // Posiciona el gráfico en la hoja
+          .setOption('vAxis', { gridlines: { count: 20 } })
+          .setOption('title', 'Litros por dia de la vaca '+vaca) // Título del gráfico
+          .setOption('isStacked', false)
+          .setOption('hAxis.title', 'Fechas') // Etiqueta del eje X
+          .setOption('vAxis.title', 'Litros de leche') // Etiqueta del eje Y
+          .setOption('useRowAsHeaders', true)
+          .setOption("width",1000)
+          .setOption("height",800)
+          .build();
+          if(opci=="dia"){
+            chart0 = sheetGraficar.getCharts()[i];
+            chart0= chart0.modify()
+            .setChartType(Charts.ChartType.COLUMN)
+            .build();
+          }
+          sheetGraficar.updateChart(chart0);
+        }else{
+          var colores;
+          if(i==1){
+            colores='#0000FF';
+          }else if(i==2){
+            colores='#FF0000';
+          }else if(i==3){
+            colores='#FFA500';
+          }
+          var chart = sheetGraficar.getCharts()[i];
+          chart = chart.modify()
+          .setChartType(Charts.ChartType.AREA)
+          .clearRanges()
+          .addRange(vectRange[1])
+          .addRange(vectRange[i+1])
+          .setPosition(7, 4, 0, 0) // Posiciona el gráfico en la hoja
+          .setOption('vAxis', { gridlines: { count: 20 } })
+          .setOption("width",1000)
+          .setOption("height",800)
+          .setOption('title', 'Litros por dia de la vaca '+vaca) // Título del gráfico
+          .setOption('isStacked', false)
+          .setOption('hAxis.title', 'Fechas') // Etiqueta del eje X
+          .setOption('vAxis.title', 'Litros de leche') // Etiqueta del eje Y
+          .setOption('useRowAsHeaders', true)
+          .setOption('series', {
+            0: { color: colores }, // Color para la primera serie
+            })
+          .build();
+          if(opci=="dia"){
+            chart = sheetGraficar.getCharts()[i];
+            chart= chart.modify()
+            .setChartType(Charts.ChartType.COLUMN)
+            .build();
+          }
+          sheetGraficar.updateChart(chart);
+        }
+        
+      
+      
+    }
+  }
+  return ContentService.createTextOutput("Grafico Generado");
+}
+
+function filtrarDatos(e) {
+  // Obtener una referencia a la hoja para el grafico
+  var sheetName = "GrafTodo"; // Nombre de la hoja donde deseas pegar los datos
+  var spreadsheet2 = SpreadsheetApp.openById(SheetId2);
+  var sheetGrafico2 = spreadsheet2.getSheetByName(sheetName);
+
+  // Obtener una referencia a la hoja de Google Sheets Destino
+  var sheetName = "Filtro"; // Nombre de la hoja donde deseas pegar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheetDestino = spreadsheet.getSheetByName(sheetName);
+
+  // Obtener una referencia a la hoja de Google Sheets Origen
+  var sheetName = "Produccion"; // Nombre de la hoja donde deseas buscar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheetOrigen = spreadsheet.getSheetByName(sheetName);
+  // Obtener una referencia a la hoja de Google Sheets Origen
+  var sheetName = "Graficar"; // Nombre de la hoja donde deseas buscar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheetGrafico = spreadsheet.getSheetByName(sheetName);
+
+  // Crear la hoja de destino si no existe
+  if (sheetDestino === null) {
+    sheetDestino = spreadsheet.insertSheet("Filtro");
+  } else {
+    // Limpiar la hoja de destino
+    sheetDestino.clearContents();
+  }
+
+  // Obtener los parámetros de la solicitud HTTP
+  var parametros = e.parameter;
+  var fechI = String(parametros.fechaIn).split("-");
+  var fechaFirst =  fechI[1]+"-"+fechI[0]+"-"+fechI[2];
+  var fechF = String(parametros.fechaFin).split("-");
+  var fechaEnd = fechF[1]+"-"+fechF[0]+"-"+fechF[2]; 
+  var vaca = parametros.vaca;
+  var opcion = parametros.opc;
+  
+
+  // Validar que se ha proporcionado una fecha
+  if (!fechaFirst) {
+    return ContentService.createTextOutput("Por favor, proporciona una fecha Inicial en el formato 'dd-MM-yyyy'.");
+  }else if (!fechaEnd){
+    return ContentService.createTextOutput("Por favor, proporciona una fecha Final en el formato 'dd-MM-yyyy'.");
+  }
+  
+  // Obtener todos los datos de la hoja
+  //Seleccionar el rango a filrar
+  var lastFila = sheetOrigen.getLastRow();
+  var lastColumna = sheetOrigen.getLastColumn();
+  //var datosOrigen = sheetOrigen.getRange(1,1,lastFila,lastColumna).getValues();
+  var datosOrigen = sheetOrigen.getDataRange().getDisplayValues();
+  console.log(datosOrigen.length)
+  // filtramos las filas que coinciden con el rango
+  
+  //var datosFiltrados;
+  if (opcion == "dia"){
+    if (vaca == "todo"){
+      var datosFiltrados = datosOrigen.filter(function(item){
+        if (new Date(item[0]) >= new Date(fechaFirst) &&  new Date(item[0]) <= new Date(fechaFirst)){
+          return true;
+        }
+      })
+    }else{
+      var datosFiltrados = datosOrigen.filter(function(item){
+        if (new Date(item[0]) >= new Date(fechaFirst) &&  new Date(item[0]) <= new Date(fechaFirst)){
+          return vaca == item[4];
+        }
+      })
+    }
+  }else{
+    if (vaca == "todo"){
+      var datosFiltrados = datosOrigen.filter(function(item){
+        if (new Date(item[0]) >= new Date(fechaFirst) &&  new Date(item[0]) <= new Date(fechaEnd)){
+          
+          return true;
+        }
+      })
+      console.log('ojo '+datosFiltrados.length)
+    }else{
+      var datosFiltrados = datosOrigen.filter(function(item){
+        if (new Date(item[0]) >= new Date(fechaFirst) &&  new Date(item[0]) <= new Date(fechaEnd)){
+          return vaca == item[4];
+        }
+      })
+      console.log('iki '+datosFiltrados.length)
+    }
+  }
+  
+  //Generar tablas para el grafico
+  var vectFecha = oneColum(datosFiltrados,0);
+  var vectVolumen = oneColum2(datosFiltrados,5);
+  var vectHorario = oneColum2(datosFiltrados,2);
+  console.log(vectVolumen.length);
+  console.log(vectFecha.length);
+  console.log(vectHorario.length);
+  var tagFecha = noRepetido(vectFecha);
+  console.log(tagFecha.length);
+  var volTotal = [];
+  var volManiana = [];
+  var volTarde = [];
+  
+  for (i=0;i<=tagFecha.length-1;i++){
+    var ban1 = 0;
+    var ban2 = 0;
+    for (j=0;j<=vectFecha.length-1;j++){
+      if (tagFecha[i]==vectFecha[j]){
+        if ("MAÑANA" == vectHorario[j]){
+          ban1 = ban1 + parseFloat(vectVolumen[j]);
+        }else{
+          ban2 = ban2 + parseFloat(vectVolumen[j]);
+        }
+      }
+    }
+    volManiana[i] = ban1;
+    volTarde[i] = ban2;
+    volTotal[i] = ban1+ban2;
+  }
+  var matrixVol = transponerMatriz([tagFecha,volManiana,volTarde,volTotal]);
+  //console.log(matrixVol)
+  if (matrixVol.length==0){
+      Logger.log("No existe coincideencias");
+    }else{
+      //Pegar en Hoja Filtro
+      var rangoPegarE = sheetDestino.getRange(1,1,1,4);
+      rangoPegarE.setValues([['Fecha','MAÑANA','TARDE','TOTAL']]);
+      var rangoPegarE2 = sheetGrafico2.getRange(1,1,1,4);
+      rangoPegarE2.setValues([['Fecha','MAÑANA','TARDE','TOTAL']]);
+      var rangoPegarG = sheetDestino.getRange(2,1,matrixVol.length, matrixVol[0].length);
+      rangoPegarG.setValues(matrixVol);
+      var rangoPegarG2 = sheetGrafico2.getRange(2,1,matrixVol.length, matrixVol[0].length);
+      rangoPegarG2.setValues(matrixVol);
+  }  
+
+  
+  // Alinear celdas a la derecha
+  var numRows = sheetDestino.getLastRow();
+  var numCols = sheetDestino.getLastColumn();
+  if (numRows >= 2) {
+    var range = sheetDestino.getRange(2, 1, numRows , numCols); // Excluir la fila de encabezado
+    range.setHorizontalAlignment("rigth");
+  }
+
+  // Convertir las filas coincidentes a un formato de texto para responder a la solicitud HTTP
+  if (datosFiltrados.length > 0) {
+    var resultado = datosFiltrados.map(function(fila) {
+      return fila.join("\t");
+    }).join("\n");
+    
+    return ContentService.createTextOutput("Filas que coinciden con la fecha " + fechaFirst );
+  } else {
+    return ContentService.createTextOutput("No se encontraron filas con la fecha " + fechaEnd + ".");
+  }
+}
+
+function noRepetido(arreglo) {
+  // Convertimos el arreglo a un Set, lo que elimina los duplicados automáticamente
+  var arregloSinDuplicados = [...new Set(arreglo)];
+  
+  return arregloSinDuplicados;
+}
+
+function oneColum(arreglo,item) {
+  return arreglo.map(function(fila) {
+    var f = String(fila[item]).split("-")
+    return f[0]+" - "+f[1]+" - "+f[2]; // Accede al primer elemento de cada fila
+  });
+}
+function oneColum2(arreglo,item) {
+  return arreglo.map(function(fila) {
+    return fila[item]; // Accede al primer elemento de cada fila
+  });
+}
+function transponerMatriz(matriz) {
+  return matriz[0].map((_, colIndex) => matriz.map(row => row[colIndex]));
+}
+function rangeX(fila,i) {
+  if (i==4){
+    return fila
+  }else{
+    return []
+  }
+}
