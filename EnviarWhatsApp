@@ -1,0 +1,69 @@
+//Firebase ID Library 1hguuh4Zx72XVC1Zldm_vTtcUUKUA6iBUOoGnJUWLfqDWx5WlOJHqYkrt
+var FirebaseURL = 'https://produccion-14322-default-rtdb.firebaseio.com/';
+
+function doGet() {
+  var fechaActual = Utilities.formatDate(new Date(), 'GMT-05:00', 'yyyy-MM-dd');
+  var baseDatos = FirebaseApp.getDatabaseByUrl(FirebaseURL);
+  var fechaSeparada = fechaActual.split('-');
+  var fechaOrdenada = fechaSeparada[2]+'-'+fechaSeparada[1]+'-'+fechaSeparada[0];
+  var referencia = baseDatos.getData(fechaOrdenada);
+  //var referencia = baseDatos.getData(fechaActual);
+  var encabezados = ['Arete', 'Puesto', 'Horario', 'Volumen'];
+  var longitudMaxima = encabezados.reduce((max, header) => Math.max(max, header.length), 0);
+  var lineaSeparadora = '-'.repeat(longitudMaxima * encabezados.length + (encabezados.length - 1) * 2) + '%0A'; // Línea de guiones
+console.log(referencia)
+
+  var matrizString = encabezados.map(header => header.padEnd(longitudMaxima).replace(/ /g, '%20')).join('|') + '%0A'; // Encabezados alineado
+  matrizString += lineaSeparadora;
+  
+  var totalVolumen = 0;
+  /*
+  for (var l in referencia) {
+    var fila = [
+      referencia[l].Arete.replace(/"/g, ""),
+      referencia[l].Puesto.replace(/"/g, ""),
+      referencia[l].Volumen.replace(/"/g, "")
+    ];
+
+    matrizString += fila.map(value => value.padEnd(longitudMaxima).replace(/ /g, '%20')).join('|') + '%0A'; // Agrega la fila alineada al string con separadores y salto de línea
+    totalVolumen += parseFloat(referencia[l].Volumen.replace(/"/g, "")); // Suma los valores de Volumen para calcular el total
+  }
+*/
+var ban = 0;
+  for (let propV in referencia){
+    var referencia0 = Object.keys(referencia)[ban];
+    console.log('vaca: '+Object.keys(referencia)[ban])
+    ban = ban+1;
+    var referencia1 = referencia[propV];
+    console.log('Puesto: '+Object.keys(referencia1)[0])
+    for (let propP in referencia1){
+      var referencia2 = referencia1[propP];
+      console.log('Horario: '+Object.keys(referencia2)[0])
+      for (let propH in referencia2){
+        var referencia3 = referencia2[propH];
+        console.log('aja: '+Object.keys(referencia3)[0])
+        var fila1=[
+          Object.keys(referencia)[ban],
+          Object.keys(referencia1)[0],
+          Object.keys(referencia2)[0],
+          referencia3.Volumen
+        ];
+        totalVolumen += parseFloat(referencia3.Volumen.replace(/"/g, ""));
+        matrizString += referencia0+'%20|%20'+Object.keys(referencia1)[0]+'%20|%20'+Object.keys(referencia2)[0]+'%20|%20'+referencia3.Volumen.replace(/"/g, "")+'%0A';
+        /*
+        matrizString += fila1.map(value => value.padEnd(longitudMaxima).replace(/ /g, '%20')).join('|') + '%0A'; // Agrega la fila alineada al string con separadores y salto de línea
+    totalVolumen += parseFloat(referencia[l].Volumen.replace(/"/g, "")); // Suma los valores de Volumen para calcular el total
+        console.log(referencia2[propH].Volumen)
+        */
+      }
+    }
+  }
+
+  console.log(totalVolumen)
+  matrizString += lineaSeparadora;
+  matrizString += `Total:%20%20${totalVolumen}L%0A`; // Agrega el total al string
+  matrizString += `Fecha:%20${fechaActual}`; // Agrega la fecha al string
+  
+  Logger.log(matrizString); // Muestra el string en el registro (ventana "Ver" -> "Registro de ejecución" en Apps Script Editor).
+  return ContentService.createTextOutput(matrizString);
+}
