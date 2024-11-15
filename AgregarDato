@@ -1,0 +1,62 @@
+var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+
+function doGet(e) {
+  return ingresarDatos(e);
+}
+
+function doPost(e) {
+  return ingresarDatos(e);
+}
+
+function ingresarDatos(e) {
+  // Obtener una referencia a la hoja de Google Sheets
+  var sheetName = "Produccion"; // Nombre de la hoja donde deseas exportar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  // Obtener los parámetros de la solicitud HTTP
+  var parametros = e.parameter;
+  
+  // Por ejemplo, supongamos que quieres agregar datos que vienen con los nombres "nombre" y "edad"
+  var fech = String(parametros.fecha).split("-");
+  var fecha = fech[1]+"-"+fech[0]+"-"+fech[2];
+  var hora = parametros.hora;
+  var ordenio = parametros.ordenio;
+  var puesto = parametros.puesto;
+  var vaca = parametros.vaca;
+  var volumen = parametros.volumen;
+  
+  //buscar
+  var lastF = sheet.getLastRow();
+  var lastC = sheet.getLastColumn();
+  var rango = sheet.getRange(2,1,lastF+1,lastC);
+  var datos = rango.getDisplayValues();
+  // Recorrer todas las filas de la hoja
+  var filaEncontrada = -1;
+  for (var i = 0; i < datos.length; i++) {
+    if (datos[i][0] == fecha && datos[i][4] == vaca && datos[i][3] == puesto && datos[i][2] == ordenio) { // Compara con el valor de la primera columna
+      filaEncontrada = i + 1; // La matriz es cero-indexada, por lo que sumamos 1
+      break; // Rompe el bucle una vez encontrado el valor
+    }
+  }
+  // Si existe reemplazamos o añadimos
+  if (filaEncontrada != -1) {
+    // Reemplazar
+    sheet.getRange(filaEncontrada + 1,1,1,6).setValues([[fecha, hora, ordenio, puesto, vaca, volumen]]);
+  } else {
+    // Añadir una nueva fila con los datos recibidos
+  sheet.appendRow([fecha, hora, ordenio, puesto, vaca, volumen]);
+  }
+  
+  // Ordenar la hoja por la primera columna en orden ascendente
+  sheet.getRange(2, 1, sheet.getLastRow() - 1, lastC).sort({column: 1, ascending: true});
+  
+  if (lastF >= 2) {
+    var range = sheet.getRange(2, 1, lastF - 1, lastC); // Excluir la fila de encabezado
+    range.setHorizontalAlignment("rigth");
+  } else {
+    Logger.log("No existen datos en la base de datos.");
+  }
+  // Responder a la solicitud HTTP
+  return ContentService.createTextOutput("Datos ingresados correctamente.");
+}
