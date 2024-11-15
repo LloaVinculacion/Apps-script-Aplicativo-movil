@@ -1,0 +1,48 @@
+var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+
+function doGet(e) {
+  return eliminarFila(e);
+}
+
+function doPost(e) {
+  return eliminarFila(e);
+}
+
+function eliminarFila(e) {
+  // Obtener una referencia a la hoja de Google Sheets
+  var sheetName = "Produccion"; // Nombre de la hoja donde deseas exportar los datos
+  var spreadsheet = SpreadsheetApp.openById(SheetId);
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  
+  // Obtener los parámetros de la solicitud HTTP
+  var parametros = e.parameter;
+  
+  // Por ejemplo, supongamos que quieres agregar datos que vienen con los nombres "nombre" y "edad"
+  var fech = String(parametros.fecha).split("-");
+  var fecha = fech[1]+"-"+fech[0]+"-"+fech[2];
+  var ordenio = parametros.ordenio;
+  var puesto = parametros.puesto;
+  var vaca = parametros.vaca;
+  
+  // Obtener todos los datos de la hoja
+  var datos = sheet.getDataRange().getDisplayValues();
+  
+  // Inicializar la variable para almacenar la fila encontrada
+  var filaAEliminar = -1; // -1 indica que no se ha encontrado
+  
+  // Recorrer todas las filas de la hoja para encontrar el nombre
+  for (var i = 0; i < datos.length; i++) {
+    if (datos[i][0] == fecha && datos[i][4] == vaca && datos[i][3] == puesto && datos[i][2] == ordenio) { // Compara con el valor de la primera columna
+      filaAEliminar = i + 1; // La matriz es cero-indexada, por lo que sumamos 1 para obtener el número de fila real
+      break; // Rompe el bucle una vez encontrado el valor
+    }
+  }
+
+  // Si se encontró la fila, eliminarla
+  if (filaAEliminar != -1) {
+    sheet.deleteRow(filaAEliminar);
+    return ContentService.createTextOutput("Fila eliminada correctamente.");
+  } else {
+    return ContentService.createTextOutput("Nombre no encontrado en la hoja.");
+  }
+}
