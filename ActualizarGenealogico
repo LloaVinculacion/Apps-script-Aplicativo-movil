@@ -1,6 +1,6 @@
 //Firebase ID Library 1hguuh4Zx72XVC1Zldm_vTtcUUKUA6iBUOoGnJUWLfqDWx5WlOJHqYkrt
-var FirebaseUrl = "https://genealogico-36806-default-rtdb.firebaseio.com/";
-var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+var FirebaseUrl = "INGRESA LA URL DE TU FIREBASE GENEALOGICO";
+var SheetId = "INGRESA EL ID DE TU GOOGLE SHEET";
 
 function doGet() {
   var database = FirebaseApp.getDatabaseByUrl(FirebaseUrl);
