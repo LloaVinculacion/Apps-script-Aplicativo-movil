@@ -1,4 +1,4 @@
-var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
+var SheetId = "INGRESA EL ID DE TU GOOGLE SHEET";
 
 function doGet(e) {
   return ingresarDatos(e);
