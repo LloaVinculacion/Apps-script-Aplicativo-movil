@@ -1,5 +1,4 @@
 var SheetId = "1jANyD0255nc4Mrj1KzXb39pXqZjEtS5GNVtUk-NlEoI";
-var SheetId2 = "1UE2z8k5yuMYnDEKHtkNM2nj_BRpH-xs4v1nzjX0Dom0";
 
 
 function doGet(e) {
@@ -184,10 +183,6 @@ function graficarDatos(e) {
 }
 
 function filtrarDatos(e) {
-  // Obtener una referencia a la hoja para el grafico
-  var sheetName = "GrafTodo"; // Nombre de la hoja donde deseas pegar los datos
-  var spreadsheet2 = SpreadsheetApp.openById(SheetId2);
-  var sheetGrafico2 = spreadsheet2.getSheetByName(sheetName);
 
   // Obtener una referencia a la hoja de Google Sheets Destino
   var sheetName = "Filtro"; // Nombre de la hoja donde deseas pegar los datos
@@ -308,12 +303,9 @@ function filtrarDatos(e) {
       //Pegar en Hoja Filtro
       var rangoPegarE = sheetDestino.getRange(1,1,1,4);
       rangoPegarE.setValues([['Fecha','MAÑANA','TARDE','TOTAL']]);
-      var rangoPegarE2 = sheetGrafico2.getRange(1,1,1,4);
-      rangoPegarE2.setValues([['Fecha','MAÑANA','TARDE','TOTAL']]);
+    
       var rangoPegarG = sheetDestino.getRange(2,1,matrixVol.length, matrixVol[0].length);
       rangoPegarG.setValues(matrixVol);
-      var rangoPegarG2 = sheetGrafico2.getRange(2,1,matrixVol.length, matrixVol[0].length);
-      rangoPegarG2.setValues(matrixVol);
   }  
 
   
