@@ -1,5 +1,5 @@
 //Firebase ID Library 1hguuh4Zx72XVC1Zldm_vTtcUUKUA6iBUOoGnJUWLfqDWx5WlOJHqYkrt
-var FirebaseURL = 'https://produccion-14322-default-rtdb.firebaseio.com/';
+var FirebaseURL = 'INGRESA LA URL DE TU FIREBASE PRODUCCION';
 
 function doGet() {
   var fechaActual = Utilities.formatDate(new Date(), 'GMT-05:00', 'yyyy-MM-dd');
